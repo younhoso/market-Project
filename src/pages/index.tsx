@@ -16,10 +16,15 @@ export default function Home() {
   } = useQuery({
     queryKey: ['stores'],
     queryFn: async () => {
-      const { data } = await axios.get<StoreTypeCustom[] | undefined>(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/stores`,
-      );
-      return data || [];
+      try {
+        const { data } = await axios.get<StoreTypeCustom[] | undefined>(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/stores`,
+        );
+        return data || [];
+      } catch(error) {
+        console.error("API error:", error);
+        throw error; // React Query로 에러를 전달
+      }
     },
   });
 
