@@ -35,6 +35,7 @@ export default function Map({ lat, lng, zoom }: MapProps) {
       setMap(map);
     });
   };
+  
   return (
     <>
       <Script

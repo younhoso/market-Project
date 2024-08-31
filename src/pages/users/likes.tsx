@@ -16,7 +16,7 @@ export default function LikesPage() {
   const {
     data: likes,
     isError,
-    isLoading,
+    isPending,
   } = useQuery({
     queryKey: [`likes-${page}`],
     queryFn: async () => {
@@ -33,22 +33,30 @@ export default function LikesPage() {
     );
   }
 
+  if(isPending) {
+    return (
+      <Loading />
+    )
+  } 
+
   return (
     <div className="px-4 md:max-w-4xl mx-auto py-8">
       <h3 className="text-lg font-semibold">찜한 맛집</h3>
       <div className="mt-1 text-gray-500 text-sm">찜한 가게 리스트입니다.</div>
-      <ul role="list" className="divide-y divide-gray-100 mt-10">
-        {isLoading ? (
-          <Loading />
-        ) : (
-          likes?.data.map((like: LikeInterface, index) => (
-            <StoreList key={index} store={like.store} i={index} />
-          ))
-        )}
-      </ul>
-      {likes?.totalPage && likes.totalPage > 0 && (
-        <Pagination total={likes?.totalPage} page={page} pathname="/users/likes" />
+      {likes?.data.length > 0 ? (
+        <ul role="list" className="divide-y divide-gray-100 mt-10">
+          {likes?.data.map((like: LikeInterface, index) => (
+              <StoreList key={index} store={like.store} i={index} />
+          ))}
+        </ul>
+      ) : (
+        <div className="text-center text-gray-500 mt-10">
+          찜한 가게가 없습니다.
+        </div>
       )}
+      {likes?.totalPage && likes.totalPage > 0 ? (
+        <Pagination total={likes?.totalPage} page={page} pathname="/users/likes" />
+      ): <></>}
     </div>
   );
 }
